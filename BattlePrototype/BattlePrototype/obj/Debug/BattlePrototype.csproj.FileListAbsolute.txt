@@ -1,0 +1,6 @@
+C:\Users\markusran\Desktop\BattlePrototype\BattlePrototype\BattlePrototype\bin\Debug\BattlePrototype.exe.config
+C:\Users\markusran\Desktop\BattlePrototype\BattlePrototype\BattlePrototype\bin\Debug\BattlePrototype.exe
+C:\Users\markusran\Desktop\BattlePrototype\BattlePrototype\BattlePrototype\bin\Debug\BattlePrototype.pdb
+C:\Users\markusran\Desktop\BattlePrototype\BattlePrototype\BattlePrototype\obj\Debug\BattlePrototype.csprojResolveAssemblyReference.cache
+C:\Users\markusran\Desktop\BattlePrototype\BattlePrototype\BattlePrototype\obj\Debug\BattlePrototype.exe
+C:\Users\markusran\Desktop\BattlePrototype\BattlePrototype\BattlePrototype\obj\Debug\BattlePrototype.pdb
