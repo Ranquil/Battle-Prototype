@@ -32,6 +32,8 @@ namespace BattlePrototype
             table.Columns.Add("Water", typeof(ElemResistance));
             table.Columns.Add("Air", typeof(ElemResistance));
             table.Columns.Add("Earth", typeof(ElemResistance));
+            table.Columns.Add("Light", typeof(ElemResistance));
+            table.Columns.Add("Dark", typeof(ElemResistance));
 
             table.Rows.Add(Enemy.DUMMY, "Dummy", 100, 50, 6, 6, 6, 6, 6, 6, SkillSet(Enemy.DUMMY));
             table.Rows.Add(Enemy.IMP, "Imp", 50, 10, 4, 5, 4, 7, 4, 3);
@@ -41,7 +43,7 @@ namespace BattlePrototype
 
         public static Skill[] SkillSet(Enemy enemy)
         {//Assing the skillset to ski.
-            Skill[] ski = null;        //Ski is set as something so it can be returned outside if clauses.
+            Skill[] ski = null;        //Ski is set as something so it can be returned outside if clauses without an else statement.
 
 
             if (enemy == Enemy.DUMMY)
