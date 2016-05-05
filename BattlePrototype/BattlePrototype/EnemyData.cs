@@ -36,7 +36,7 @@ namespace BattlePrototype
             table.Columns.Add("Dark", typeof(ElemResistance));
 
             table.Rows.Add(Enemy.DUMMY, "Dummy", 100, 50, 6, 6, 6, 6, 6, 6, SkillSet(Enemy.DUMMY));
-            table.Rows.Add(Enemy.IMP, "Imp", 50, 10, 4, 5, 4, 7, 4, 3);
+            table.Rows.Add(Enemy.IMP, "Imp", 50, 10, 4, 5, 4, 7, 4, 3, SkillSet(Enemy.IMP));
 
             return table;
         }
@@ -51,6 +51,14 @@ namespace BattlePrototype
                 ski = new Skill[1];
                 ski[0] = Skill.ATTACK;
             }
+			
+			if (enemy == Enemy.IMP)
+			{
+				ski = new Skill[2];
+				ski[0] = Skill.ATTACK;
+				ski[1] = Skill.HUR;
+			}
+			
 
             return ski;
         }

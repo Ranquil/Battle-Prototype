@@ -6,7 +6,11 @@ namespace BattlePrototype
 
     enum Skill  //Each skill is listed here as an enum. The order isn't too important because there's this thing called a query.
     {
-        ATTACK
+        ATTACK,
+		HUR,
+		VIS,
+		HAI,
+		MAA
     };
 
     enum Element    //All elements are listed here as an enum.
@@ -50,7 +54,11 @@ namespace BattlePrototype
             table.Columns.Add("Element", typeof(Element));
             table.Columns.Add("Skill Power", typeof(int));
 
-            table.Rows.Add(Skill.ATTACK, "Attack", "Your run-of-the-mill physical attack.", 0, SkillType.STR, Element.PHYS);
+            table.Rows.Add(Skill.ATTACK, "Attack", "Deals some physical damage to the enemy.", 0, SkillType.STR, Element.PHYS);
+            table.Rows.Add(Skill.HUR, "Hur", "Deals fire damage to the enemy. 3MP", 3, SkillType.MAG, Element.FIRE);
+            table.Rows.Add(Skill.VIS, "Vis", "Deals water damage to the enemy. 3MP", 3, SkillType.MAG, Element.WATER);
+            table.Rows.Add(Skill.HAI, "Hai", "Deals air damage to the enemy. 3MP", 3, SkillType.MAG, Element.AIR);
+            table.Rows.Add(Skill.MAA, "Maa", "Deals earth damage to the enemy. 3MP", 3, SkillType.MAG, Element.EARTH);
 
             return table;
         }
