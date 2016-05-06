@@ -44,7 +44,7 @@ namespace BattlePrototype
         
         public static DataTable GetTable()
         {
-            DataTable table = new DataTable();
+            DataTable table = new DataTable("Skills");
 
             table.Columns.Add("ID", typeof(Skill));
             table.Columns.Add("Name", typeof(string));
