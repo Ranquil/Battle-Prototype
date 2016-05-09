@@ -10,7 +10,8 @@ namespace BattlePrototype
 		HUR,
 		VIS,
 		HAI,
-		MAA
+		MAA,
+        IKI
     };
 
     enum Element    //All elements are listed here as an enum.
@@ -47,18 +48,20 @@ namespace BattlePrototype
             DataTable table = new DataTable("Skills");
 
             table.Columns.Add("ID", typeof(Skill));
-            table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Description", typeof(string));
-            table.Columns.Add("MP Cost", typeof(int));
-            table.Columns.Add("Skill Type", typeof(SkillType));
-            table.Columns.Add("Element", typeof(Element));
-            table.Columns.Add("Skill Power", typeof(int));
+            table.Columns.Add("Name", typeof(string));          //1 name
+            table.Columns.Add("Description", typeof(string));   //2 desc
+            table.Columns.Add("MP Cost", typeof(int));          //3 mp
+            table.Columns.Add("Skill Type", typeof(SkillType)); //4 type
+            table.Columns.Add("Element", typeof(Element));      //5 elem
+            table.Columns.Add("Skill Power", typeof(int));      //6 atk
+            table.Columns.Add("Ignores Defence", typeof(bool)); //7 ign def
 
-            table.Rows.Add(Skill.ATTACK, "Attack", "Deals some physical damage to the enemy.", 0, SkillType.STR, Element.PHYS);
-            table.Rows.Add(Skill.HUR, "Hur", "Deals fire damage to the enemy. 3MP", 3, SkillType.MAG, Element.FIRE);
-            table.Rows.Add(Skill.VIS, "Vis", "Deals water damage to the enemy. 3MP", 3, SkillType.MAG, Element.WATER);
-            table.Rows.Add(Skill.HAI, "Hai", "Deals air damage to the enemy. 3MP", 3, SkillType.MAG, Element.AIR);
-            table.Rows.Add(Skill.MAA, "Maa", "Deals earth damage to the enemy. 3MP", 3, SkillType.MAG, Element.EARTH);
+            table.Rows.Add(Skill.ATTACK, "Attack", "Deals some physical damage to the enemy.", 0, SkillType.STR, Element.PHYS, 10);
+            table.Rows.Add(Skill.HUR, "Hur", "Deals fire damage to the enemy. 3MP", 3, SkillType.MAG, Element.FIRE, 15);
+            table.Rows.Add(Skill.VIS, "Vis", "Deals water damage to the enemy. 3MP", 3, SkillType.MAG, Element.WATER, 15);
+            table.Rows.Add(Skill.HAI, "Hai", "Deals air damage to the enemy. 3MP", 3, SkillType.MAG, Element.AIR, 15);
+            table.Rows.Add(Skill.MAA, "Maa", "Deals earth damage to the enemy. 3MP", 3, SkillType.MAG, Element.EARTH, 15);
+            table.Rows.Add(Skill.IKI, "Iki", "Restores some of your health. 4MP", 4, SkillType.HEAL, Element.MU, 15, true);
 
             return table;
         }

@@ -24,6 +24,9 @@ namespace BattlePrototype
         static DataRow[] hero;
         static string chooseSkill;
         static int skillChoise;
+        static int round;
+        static int dmg;
+        static int actualPow;
 
         static int heroHP;
         static int heroMaxHP;
@@ -41,12 +44,12 @@ namespace BattlePrototype
         static void Main(string[] args)
         {
             BattleProsessing();
+            Console.ReadKey();
         }
 
         static void BattleProsessing()
         {
-
-            BattleStart(Enemy.DUMMY);	//Choose the enemy here.
+            BattleStart(Enemy.IMP);	//Choose the enemy here.
             do
             {
                 if (currentTurn == Turn.PLAYER)
@@ -54,7 +57,7 @@ namespace BattlePrototype
                 else
                     EnemyTurn();
             }
-            while (enemyHP >= 0 || heroHP >= 0);        //Battle processing will happen normally if neither the player nor the enemy has died.
+            while (enemyHP > 0 || heroHP > 0);        //Battle processing will happen normally if neither the player nor the enemy has died.
         }
 
         static void BattleStart(Enemy enemy)
@@ -75,6 +78,7 @@ namespace BattlePrototype
             enemyMP = enemyMaxMP;
             enemySkills = chosenEnemy[0].Field<Skill[]>(10);
 
+            round++;
 
             int whoStarts = rng.Next(1, 4);		//For now, 1 in 3 chance of enemy ambush.
             if (whoStarts < 3)
@@ -88,12 +92,13 @@ namespace BattlePrototype
                 Console.WriteLine(enemyName + " struck from behind! It's an ambush!");
             }
 
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         static void PlayerTurn()
         {
             Console.Clear();
+            Console.WriteLine("ROUND " + round + "\n\n");
             Console.WriteLine(enemyName + ":   " + enemyHP + " / " + enemyMaxHP + " HP   " + enemyMP + " / " + enemyMaxMP + " MP\n\n");
             Console.WriteLine("You:   " + heroHP + " / " + heroMaxHP + " HP   " + heroMP + " / " + heroMaxMP + " MP\n\n\n\n");
 
@@ -106,14 +111,32 @@ namespace BattlePrototype
             if (int.TryParse(chooseSkill, out skillChoise))
             {
                 Console.Clear();
-                Console.WriteLine("You used " + skillData.Rows[(int)heroSkills[skillChoise]].Field<string>(1) + " on " + enemyName + "!");
-                currentTurn = Turn.ENEMY;
+                if (skillChoise < heroSkills.Length && skillChoise >= 0)        //The number should be between 0 and the amount of skills the player has.
+                {
+                    Console.WriteLine("You used " + skillData.Rows[(int)heroSkills[skillChoise]].Field<string>(1) + " on " + enemyName + "!\n\n");
+                    Console.ReadKey();
+
+                    if (skillData.Rows[(int)heroSkills[skillChoise]].Field<SkillType>(4) == SkillType.STR)
+                        actualPow = hero[0].Field<int>(4);
+                    else
+                        actualPow = hero[0].Field<int>(5);
+                    dmg = DamageAlgorithm(actualPow, hero[0].Field<int>(6), chosenEnemy[0].Field<int>(6));
+
+                    Console.WriteLine(enemyName + " took " + dmg + " points of damage!");
+                    enemyHP -= dmg;
+                    if (enemyHP <= 0)
+                        Console.WriteLine("It was fatal! " + enemyName + " is no more.");
+
+                    currentTurn = Turn.ENEMY;
+                }
+                else
+                    Console.WriteLine("You don't have a skill with that number.\nMaybe next time you could read the instructions, n00b.");
                 Console.ReadLine();
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine("Ha ha, real funny. Type an actual integer next time, smartass.");
+                Console.WriteLine("Ha ha, real funny. Try typing an actual integer next time, smartass.");
                 Console.ReadLine();
             }
         }
@@ -121,10 +144,36 @@ namespace BattlePrototype
         static void EnemyTurn()
         {
             Console.Clear();
+
+            round++;
+
             int ai = rng.Next(0, enemySkills.Length);
-            Console.WriteLine(enemyName + " used " + skillData.Rows[(int)enemySkills[ai]].Field<string>(1) + " on you! Oh snap!!1!11one1!1");
+
+            if (skillData.Rows[(int)enemySkills[ai]].Field<SkillType>(4) == SkillType.STR)
+                actualPow = chosenEnemy[0].Field<int>(4);
+            else
+                actualPow = chosenEnemy[0].Field<int>(5);
+            dmg = DamageAlgorithm(actualPow, chosenEnemy[0].Field<int>(6), hero[0].Field<int>(6));
+
+            Console.WriteLine(enemyName + " used " + skillData.Rows[(int)enemySkills[ai]].Field<string>(1) + " on you! Oh snap!\n\n");
+            Console.ReadKey();
+            Console.WriteLine("You took " + dmg + " points of damage!");
+            heroHP -= dmg;
+            if (heroHP <= 0)
+                Console.WriteLine("It was fatal! You are no more.");
+
             currentTurn = Turn.PLAYER;
-            Console.ReadLine();
+            Console.ReadKey();
+        }
+
+        static int DamageAlgorithm(int pow, int atk, int def)   //pow = Strength/Magic; atk = The particular skill's attack power; def = Defence
+        {
+            float finalDmg;
+
+            float fRng = (float)rng.Next(90, 111) / 100f;   //Random.Next can't be used for generating float values so let's do things weirdly instead.
+            finalDmg = 5 * (float)Math.Sqrt( (pow*3) / def * atk ) * fRng;
+
+            return (int)finalDmg;
         }
     }
 }

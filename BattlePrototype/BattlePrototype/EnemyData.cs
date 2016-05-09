@@ -52,12 +52,13 @@ namespace BattlePrototype
 
             if (enemy == Enemy.HERO)
             {
-                ski = new Skill[5];
+                ski = new Skill[6];
                 ski[0] = Skill.ATTACK;
                 ski[1] = Skill.HUR;
                 ski[2] = Skill.VIS;
                 ski[3] = Skill.HAI;
                 ski[4] = Skill.MAA;
+                ski[5] = Skill.IKI;
             }
 
             if (enemy == Enemy.DUMMY)
