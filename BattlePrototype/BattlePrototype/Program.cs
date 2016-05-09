@@ -62,10 +62,11 @@ namespace BattlePrototype
             chosenEnemy = enemyData.Select("ID = " + (int)enemy);       //The Enemy enum must be cast into an int because enums are processed as integers.
             hero = enemyData.Select("ID = " + (int)Enemy.HERO);         //If you don't cast it into an integer, the whole code will explode.
 
-            heroMaxHP = hero[0].Field<int>(2);
-            heroHP = heroMaxHP;
+            heroMaxHP = hero[0].Field<int>(2);                  //We do need current HP stored outside the DataTables, but here are also some other commonly printed stats.
+            heroHP = heroMaxHP;                                 //Just so we don't need to use the horrible DataRow[] syntax to call them all the time.
             heroMaxMP = hero[0].Field<int>(3);
             heroMP = heroMaxMP;
+            heroSkills = hero[0].Field<Skill[]>(10);
 
             enemyName = chosenEnemy[0].Field<string>(1);
             enemyMaxHP = chosenEnemy[0].Field<int>(2);
@@ -94,17 +95,16 @@ namespace BattlePrototype
             Console.WriteLine(enemyName + ":   " + enemyHP + " / " + enemyMaxHP + " HP   " + enemyMP + " / " + enemyMaxMP + " MP\n\n");
             Console.WriteLine("You:   " + heroHP + " / " + heroMaxHP + " HP   " + heroMP + " / " + heroMaxMP + " MP\n\n\n\n");
 
-            heroSkills = hero[0].Field<Skill[]>(10);
 
-            for (int i = 0; i < heroSkills.Length; i++)
+            for (int i = 0; i < heroSkills.Length; i++)     //Let's print the player's skills. This for loop prints the name and the description of the skill int point i.
                 Console.WriteLine(i + " - " + skillData.Rows[(int)heroSkills[i]].Field<string>(1) + " - " + skillData.Rows[(int)heroSkills[i]].Field<string>(2)); //Looks ugly, doesn't it?
 
-            Console.WriteLine("\nWhat will you do?");
+            Console.WriteLine("\nWhat will you do?\n-- Type the correct skill's number and press Enter --");
             chooseSkill = Console.ReadLine();
             if (int.TryParse(chooseSkill, out skillChoise))
             {
                 Console.Clear();
-                Console.WriteLine("ei viddu mage");
+                Console.WriteLine("You used " + skillData.Rows[(int)heroSkills[skillChoise]].Field<string>(1) + " on " + enemyName + "!");
                 Console.ReadLine();
             }
             else
