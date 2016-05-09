@@ -7,11 +7,13 @@ namespace BattlePrototype
     {
         DUMMY,
         HERO,
-        IMP
+        IMP,
+        _Length     //This probably won't be needed but it's handy in case you need the count of all the enemies in the game.
     };
 
     class EnemyData
     {
+        
 
          public static DataTable GetTable()
         {
