@@ -36,10 +36,15 @@ namespace BattlePrototype
         static int enemyMaxHP;
         static int enemyMP;
         static int enemyMaxMP;
+        static Skill[] enemySkills;
 
         static void Main(string[] args)
         {
-            
+            BattleProsessing();
+        }
+
+        static void BattleProsessing()
+        {
 
             BattleStart(Enemy.DUMMY);	//Choose the enemy here.
             do
@@ -47,14 +52,9 @@ namespace BattlePrototype
                 if (currentTurn == Turn.PLAYER)
                     PlayerTurn();
                 else
-                    Console.ReadLine();
+                    EnemyTurn();
             }
             while (enemyHP >= 0 || heroHP >= 0);        //Battle processing will happen normally if neither the player nor the enemy has died.
-        }
-
-        void BattleProsessing(Enemy enemy)
-        {
-
         }
 
         static void BattleStart(Enemy enemy)
@@ -73,6 +73,8 @@ namespace BattlePrototype
             enemyHP = enemyMaxHP;
             enemyMaxMP = chosenEnemy[0].Field<int>(3);
             enemyMP = enemyMaxMP;
+            enemySkills = chosenEnemy[0].Field<Skill[]>(10);
+
 
             int whoStarts = rng.Next(1, 4);		//For now, 1 in 3 chance of enemy ambush.
             if (whoStarts < 3)
@@ -82,7 +84,7 @@ namespace BattlePrototype
             }
             else
             {
-                currentTurn = Turn.PLAYER; //Turn.ENEMY;
+                currentTurn = Turn.ENEMY;
                 Console.WriteLine(enemyName + " struck from behind! It's an ambush!");
             }
 
@@ -105,6 +107,7 @@ namespace BattlePrototype
             {
                 Console.Clear();
                 Console.WriteLine("You used " + skillData.Rows[(int)heroSkills[skillChoise]].Field<string>(1) + " on " + enemyName + "!");
+                currentTurn = Turn.ENEMY;
                 Console.ReadLine();
             }
             else
@@ -113,6 +116,15 @@ namespace BattlePrototype
                 Console.WriteLine("Ha ha, real funny. Type an actual integer next time, smartass.");
                 Console.ReadLine();
             }
+        }
+
+        static void EnemyTurn()
+        {
+            Console.Clear();
+            int ai = rng.Next(0, enemySkills.Length);
+            Console.WriteLine(enemyName + " used " + skillData.Rows[(int)enemySkills[ai]].Field<string>(1) + " on you! Oh snap!!1!11one1!1");
+            currentTurn = Turn.PLAYER;
+            Console.ReadLine();
         }
     }
 }
