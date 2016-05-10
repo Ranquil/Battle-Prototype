@@ -44,12 +44,11 @@ namespace BattlePrototype
         static void Main(string[] args)
         {
             BattleProsessing();
-            Console.ReadKey();
         }
 
         static void BattleProsessing()
         {
-            BattleStart(Enemy.IMP);	//Choose the enemy here.
+            BattleStart(Enemy.FAIRY);	//Choose the enemy here.
             do
             {
                 if (currentTurn == Turn.PLAYER)
@@ -57,7 +56,7 @@ namespace BattlePrototype
                 else
                     EnemyTurn();
             }
-            while (enemyHP > 0 || heroHP > 0);        //Battle processing will happen normally if neither the player nor the enemy has died.
+            while (enemyHP > 0 && heroHP > 0);        //Battle processing will happen normally if neither the player nor the enemy has died.
         }
 
         static void BattleStart(Enemy enemy)
@@ -104,40 +103,64 @@ namespace BattlePrototype
 
 
             for (int i = 0; i < heroSkills.Length; i++)     //Let's print the player's skills. This for loop prints the name and the description of the skill int point i.
+            {
+
                 Console.WriteLine(i + " - " + skillData.Rows[(int)heroSkills[i]].Field<string>(1) + " - " + skillData.Rows[(int)heroSkills[i]].Field<string>(2)); //Looks ugly, doesn't it?
+            }
 
             Console.WriteLine("\nWhat will you do?\n-- Type the correct skill's number and press Enter --");
             chooseSkill = Console.ReadLine();
+            Console.Clear();
             if (int.TryParse(chooseSkill, out skillChoise))
             {
-                Console.Clear();
                 if (skillChoise < heroSkills.Length && skillChoise >= 0)        //The number should be between 0 and the amount of skills the player has.
                 {
-                    Console.WriteLine("You used " + skillData.Rows[(int)heroSkills[skillChoise]].Field<string>(1) + " on " + enemyName + "!\n\n");
-                    Console.ReadKey();
+                    if (heroMP >= skillData.Rows[skillChoise].Field<int>(3))     //The skill should only be used if there is enough MP.
+                    {
+                        heroMP -= skillData.Rows[skillChoise].Field<int>(3);
+                        Console.WriteLine("You used " + skillData.Rows[(int)heroSkills[skillChoise]].Field<string>(1) + /*" on " + enemyName + */"!\n\n");
+                        Console.ReadKey();
 
-                    if (skillData.Rows[(int)heroSkills[skillChoise]].Field<SkillType>(4) == SkillType.STR)
-                        actualPow = hero[0].Field<int>(4);
+                        if (skillData.Rows[(int)heroSkills[skillChoise]].Field<SkillType>(4) == SkillType.STR)
+                            actualPow = hero[0].Field<int>(4);
+                        else
+                            actualPow = hero[0].Field<int>(5);
+
+                        if (skillData.Rows[(int)heroSkills[skillChoise]].Field<bool>(7) == false)
+                            dmg = DamageAlgorithm(actualPow, hero[0].Field<int>(6), chosenEnemy[0].Field<int>(6));
+                        else
+                            dmg = DamageAlgorithm(actualPow, hero[0].Field<int>(6), 1);
+
+                        if (skillData.Rows[(int)heroSkills[skillChoise]].Field<SkillType>(4) != SkillType.HEAL) //If the skill isn't a healing spell, it will deal damage. Duh.
+                        {
+
+                            Console.WriteLine(enemyName + " took " + dmg + " points of damage!");
+                            enemyHP -= dmg;
+                            if (enemyHP <= 0)
+                                Console.WriteLine("It was fatal! " + enemyName + " is no more.");
+                        }
+                        else
+                        {
+
+                            Console.WriteLine("You recovered " + dmg + " points of health!");
+                            heroHP += dmg;
+                            if (heroHP > heroMaxHP)
+                                heroHP = heroMaxHP;
+                        }
+
+                        currentTurn = Turn.ENEMY;
+                    }
                     else
-                        actualPow = hero[0].Field<int>(5);
-                    dmg = DamageAlgorithm(actualPow, hero[0].Field<int>(6), chosenEnemy[0].Field<int>(6));
-
-                    Console.WriteLine(enemyName + " took " + dmg + " points of damage!");
-                    enemyHP -= dmg;
-                    if (enemyHP <= 0)
-                        Console.WriteLine("It was fatal! " + enemyName + " is no more.");
-
-                    currentTurn = Turn.ENEMY;
+                        Console.WriteLine("You don't have enough MP to use that skill. Try learning to count.");    //What if you don't have enough MP?
                 }
                 else
-                    Console.WriteLine("You don't have a skill with that number.\nMaybe next time you could read the instructions, n00b.");
-                Console.ReadLine();
+                    Console.WriteLine("You don't have a skill with that number.\nMaybe next time you could read the instructions, n00b.");  //What if you type a number for a skill you don't have?
+                Console.ReadKey();
             }
             else
             {
-                Console.Clear();
-                Console.WriteLine("Ha ha, real funny. Try typing an actual integer next time, smartass.");
-                Console.ReadLine();
+                Console.WriteLine("Ha ha, real funny. Try typing an actual integer next time, smartass.");      //What if you didn't type an integer?
+                Console.ReadKey();
             }
         }
 
@@ -149,18 +172,39 @@ namespace BattlePrototype
 
             int ai = rng.Next(0, enemySkills.Length);
 
-            if (skillData.Rows[(int)enemySkills[ai]].Field<SkillType>(4) == SkillType.STR)
-                actualPow = chosenEnemy[0].Field<int>(4);
-            else
-                actualPow = chosenEnemy[0].Field<int>(5);
-            dmg = DamageAlgorithm(actualPow, chosenEnemy[0].Field<int>(6), hero[0].Field<int>(6));
+            if (enemyMP >= skillData.Rows[(int)enemySkills[ai]].Field<int>(3))  //The enemy can only use the selected skill if they have enough MP.
+            {
+                enemyMP -= skillData.Rows[(int)enemySkills[ai]].Field<int>(3);
+                if (skillData.Rows[(int)enemySkills[ai]].Field<SkillType>(4) == SkillType.STR)
+                    actualPow = chosenEnemy[0].Field<int>(4);
+                else
+                    actualPow = chosenEnemy[0].Field<int>(5);
 
-            Console.WriteLine(enemyName + " used " + skillData.Rows[(int)enemySkills[ai]].Field<string>(1) + " on you! Oh snap!\n\n");
-            Console.ReadKey();
-            Console.WriteLine("You took " + dmg + " points of damage!");
-            heroHP -= dmg;
-            if (heroHP <= 0)
-                Console.WriteLine("It was fatal! You are no more.");
+                if (skillData.Rows[(int)enemySkills[ai]].Field<bool>(7) == false)
+                    dmg = DamageAlgorithm(actualPow, chosenEnemy[0].Field<int>(6), hero[0].Field<int>(6));
+                else
+                    dmg = DamageAlgorithm(actualPow, chosenEnemy[0].Field<int>(6), 1);
+
+                Console.WriteLine(enemyName + " used " + skillData.Rows[(int)enemySkills[ai]].Field<string>(1) + "! Oh snap!\n\n");
+                Console.ReadKey();
+
+                if (skillData.Rows[(int)enemySkills[ai]].Field<SkillType>(4) != SkillType.HEAL)
+                {
+                    Console.WriteLine("You took " + dmg + " points of damage!");
+                    heroHP -= dmg;
+                    if (heroHP <= 0)
+                        Console.WriteLine("It was fatal! You are no more.");
+                }
+                else
+                {
+                    Console.WriteLine(enemyName + " recovered " + dmg + " points of health!");
+                    enemyHP += dmg;
+                    if (enemyHP > enemyMaxHP)
+                        enemyHP = enemyMaxHP;
+                }
+            }
+            else
+                Console.WriteLine(enemyName + " tried to use " + skillData.Rows[(int)enemySkills[ai]].Field<string>(1) + " but there wasn't enough MP!");
 
             currentTurn = Turn.PLAYER;
             Console.ReadKey();
@@ -170,8 +214,8 @@ namespace BattlePrototype
         {
             float finalDmg;
 
-            float fRng = (float)rng.Next(90, 111) / 100f;   //Random.Next can't be used for generating float values so let's do things weirdly instead.
-            finalDmg = 5 * (float)Math.Sqrt( (pow*3) / def * atk ) * fRng;
+            float fRng = (float)rng.Next(90, 111) / 100f;   //Random.Next can't be used for generating float values so let's generate 0.9 <-> 1.1 weirdly instead.
+            finalDmg = (float)Math.Sqrt( (pow*5) / def * atk ) * 1.5f * fRng;
 
             return (int)finalDmg;
         }

@@ -4,14 +4,15 @@ using System.Data;
 namespace BattlePrototype
 {
 
-    enum Skill  //Each skill is listed here as an enum. The order isn't too important because there's this thing called a query.
+    enum Skill  //Each skill is listed here as an enum. The order isn't too important because skills can be searched with this type of enum.
     {
         ATTACK,
 		HUR,
 		VIS,
 		HAI,
 		MAA,
-        IKI
+        IKI,
+        PIERCE_ATTACK
     };
 
     enum Element    //All elements are listed here as an enum.
@@ -56,16 +57,16 @@ namespace BattlePrototype
             table.Columns.Add("Skill Power", typeof(int));      //6 atk
             table.Columns.Add("Ignores Defence", typeof(bool)); //7 ign def
 
-            table.Rows.Add(Skill.ATTACK, "Attack", "Deals some physical damage to the enemy.", 0, SkillType.STR, Element.PHYS, 10);
-            table.Rows.Add(Skill.HUR, "Hur", "Deals fire damage to the enemy. 3MP", 3, SkillType.MAG, Element.FIRE, 15);
-            table.Rows.Add(Skill.VIS, "Vis", "Deals water damage to the enemy. 3MP", 3, SkillType.MAG, Element.WATER, 15);
-            table.Rows.Add(Skill.HAI, "Hai", "Deals air damage to the enemy. 3MP", 3, SkillType.MAG, Element.AIR, 15);
-            table.Rows.Add(Skill.MAA, "Maa", "Deals earth damage to the enemy. 3MP", 3, SkillType.MAG, Element.EARTH, 15);
-            table.Rows.Add(Skill.IKI, "Iki", "Restores some of your health. 4MP", 4, SkillType.HEAL, Element.MU, 15, true);
+            table.Rows.Add(Skill.ATTACK, "Attack", "Deals some physical damage to the enemy.", 0, SkillType.STR, Element.PHYS, 10, false);
+            table.Rows.Add(Skill.HUR, "Hur", "Deals fire damage to the enemy. 3MP", 3, SkillType.MAG, Element.FIRE, 15, false);
+            table.Rows.Add(Skill.VIS, "Vis", "Deals water damage to the enemy. 3MP", 3, SkillType.MAG, Element.WATER, 15, false);
+            table.Rows.Add(Skill.HAI, "Hai", "Deals air damage to the enemy. 3MP", 3, SkillType.MAG, Element.AIR, 15, false);
+            table.Rows.Add(Skill.MAA, "Maa", "Deals earth damage to the enemy. 3MP", 3, SkillType.MAG, Element.EARTH, 15, false);
+            table.Rows.Add(Skill.IKI, "Iki", "Restores some of your health. 4MP", 4, SkillType.HEAL, Element.MU, 20, true);
+            table.Rows.Add(Skill.PIERCE_ATTACK, "Pierce Attack", "Deals physical damage to the enemy. Ignores defence. 7MP", 7, SkillType.STR, Element.PHYS, 20, true);
 
             return table;
         }
-
 
     }
 }

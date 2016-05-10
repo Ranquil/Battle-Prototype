@@ -8,6 +8,7 @@ namespace BattlePrototype
         DUMMY,
         HERO,
         IMP,
+        FAIRY,
         _Length     //This probably won't be needed but it's handy in case you need the count of all the enemies in the game.
     };
 
@@ -39,8 +40,10 @@ namespace BattlePrototype
             table.Columns.Add("Dark", typeof(ElemResistance));
 
             table.Rows.Add(Enemy.DUMMY, "Dummy", 100, 50, 6, 6, 6, 6, 6, 6, SkillSet(Enemy.DUMMY));
-            table.Rows.Add(Enemy.HERO, "You", 100, 30, 4, 5, 4, 5, 3, 3, SkillSet(Enemy.HERO));
+            table.Rows.Add(Enemy.HERO, "You", 100, 30, 8, 5, 4, 5, 3, 3, SkillSet(Enemy.HERO));
             table.Rows.Add(Enemy.IMP, "Imp", 50, 10, 4, 5, 4, 7, 4, 3, SkillSet(Enemy.IMP), ElemResistance.NORMAL, ElemResistance.STRONG, ElemResistance.WEAK);
+            table.Rows.Add(Enemy.FAIRY, "Fairy", 200, 50, 7, 15, 4, 10, 10, 8, SkillSet(Enemy.FAIRY),
+                ElemResistance.NORMAL, ElemResistance.WEAK, ElemResistance.STRONG, ElemResistance.NULL, ElemResistance.NORMAL, ElemResistance.NORMAL, ElemResistance.WEAK);
 
             return table;
         }
@@ -74,6 +77,14 @@ namespace BattlePrototype
 				ski[1] = Skill.HUR;
 			}
 			
+            if (enemy == Enemy.FAIRY)
+            {
+                ski = new Skill[4];
+                ski[0] = Skill.ATTACK;
+                ski[1] = Skill.HAI;
+                ski[2] = Skill.VIS;
+                ski[3] = Skill.IKI;
+            }
 
             return ski;
         }
